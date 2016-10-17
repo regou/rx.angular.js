@@ -42,6 +42,7 @@ module.exports = function (grunt) {
           'src/factory.js',
           'src/observeonscope.js',
           'src/safeApply.js',
+          'src/sub4ever.js',
           'src/$rootScopeExtensions.js',
           'src/observableRuntimeExtensions.js',
           'src/scopescheduler.js',
