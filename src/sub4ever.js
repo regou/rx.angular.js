@@ -6,14 +6,11 @@
     onComplete = angular.isFunction(onComplete) ? onComplete : noop;
 
     return this
-      .takeWhile(function () {
-        return !$scope.$$destroyed;
-      })
-      .catch(function (error) {
+      .catch(function (error,output$) {
         ($scope.$$phase || $scope.$root.$$phase) ?
           onError(error) :
           $scope.$apply(function () { onError(error); });
-        return Rx.Observable.never();
+        return output$;
       })
       .subscribe(function (data) {
         ($scope.$$phase || $scope.$root.$$phase) ?

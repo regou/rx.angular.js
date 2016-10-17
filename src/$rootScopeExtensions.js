@@ -62,6 +62,66 @@
               configurable: true,
               writable: true
           },
+
+        /**
+         * @ngdoc property
+         * @name rx.$rootScope.$toObservableHot
+         *
+         * @description
+         * Provides a method to create observable methods.
+         */
+        '$toObservableHot': {
+          /**
+           * @ngdoc function
+           * @name rx.$rootScope.$toObservableHot#value
+           *
+           * @description
+           * Creates a multicast observable from a watchExpression.
+           *
+           * @param {(function|string)} watchExpression A watch expression.
+           * @param {boolean} objectEquality Compare object for equality.
+           *
+           * @return {object} Observable.
+           */
+          value: function(watchExpression, objectEquality) {
+            var scope = this;
+
+            var hot$ = rx.Observable.create(function (observer) {
+              // Create function to handle old and new Value
+              function listener (newValue, oldValue) {
+                observer.next({ oldValue: oldValue, newValue: newValue });
+              }
+
+              // Returns function which disconnects the $watch expression
+              var disposable = new rx.Subscription(scope.$watch(watchExpression, listener, objectEquality));
+
+              scope.$on('$destroy', function(){
+                disposable.unsubscribe();
+              });
+
+              return disposable;
+            }).publish();
+
+
+            scope.$on('$destroy', function(){
+              $hot.unsubscribe();
+            });
+
+            hot$.connect();
+            return hot$
+          },
+          /**
+           * @ngdoc property
+           * @name rx.$rootScope.$toObservable#enumerable
+           *
+           * @description
+           * Enumerable flag.
+           */
+          enumerable: false,
+          configurable: true,
+          writable: true
+        },
+
           /**
            * @ngdoc property
            * @name rx.$rootScope.$toObservableCollection
