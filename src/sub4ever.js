@@ -13,7 +13,7 @@
         ($scope.$$phase || $scope.$root.$$phase) ?
           onError(error) :
           $scope.$apply(function () { onError(error); });
-        return Rx.Observable.empty();
+        return Rx.Observable.never();
       })
       .subscribe(function (data) {
         ($scope.$$phase || $scope.$root.$$phase) ?
