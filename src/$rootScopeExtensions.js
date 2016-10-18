@@ -170,6 +170,63 @@
               configurable: true,
               writable: true
           },
+
+        /**
+         * @ngdoc property
+         * @name rx.$rootScope.$toObservableCollectionHot
+         *
+         * @description
+         * Provides a method to create observable methods.
+         */
+        '$toObservableCollectionHot': {
+          /**
+           * @ngdoc function
+           * @name rx.$rootScope.$toObservableCollectionHot#value
+           *
+           * @description
+           * Creates an observable from a watchExpression.
+           *
+           * @param {(function|string)} watchExpression A watch expression.
+           *
+           * @return {object} Observable.
+           */
+          value: function(watchExpression) {
+            var scope = this;
+            var hot$ = rx.Observable.create(function (observer) {
+              // Create function to handle old and new Value
+              function listener (newValue, oldValue) {
+                observer.onNext({ oldValue: oldValue, newValue: newValue });
+              }
+
+              // Returns function which disconnects the $watch expression
+              var disposable = new rx.Subscription(scope.$watchCollection(watchExpression, listener));
+
+              scope.$on('$destroy', function(){
+                disposable.dispose();
+              });
+
+              return disposable;
+            }).publish();
+
+            scope.$on('$destroy', function(){
+              $hot.unsubscribe();
+            });
+
+            hot$.connect();
+            return hot$;
+          },
+          /**
+           * @ngdoc property
+           * @name rx.$rootScope.$toObservableCollectionHot#enumerable
+           *
+           * @description
+           * Enumerable flag.
+           */
+          enumerable: false,
+          configurable: true,
+          writable: true
+        },
+
           /**
            * @ngdoc property
            * @name rx.$rootScope.$toObservableGroup
