@@ -104,7 +104,7 @@
 
 
             scope.$on('$destroy', function(){
-              $hot.unsubscribe();
+              hot$.unsubscribe();
             });
 
             hot$.connect();
@@ -209,7 +209,7 @@
             }).publish();
 
             scope.$on('$destroy', function(){
-              $hot.unsubscribe();
+              hot$.unsubscribe();
             });
 
             hot$.connect();
