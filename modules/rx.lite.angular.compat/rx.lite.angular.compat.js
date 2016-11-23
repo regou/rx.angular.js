@@ -316,7 +316,7 @@ RxNg.inherits = function (child, parent) {
 
 
             scope.$on('$destroy', function(){
-              hot$.unsubscribe();
+              hot$.unsubscribe ? hot$.unsubscribe():'';
             });
 
             hot$.connect();
@@ -421,7 +421,7 @@ RxNg.inherits = function (child, parent) {
             }).publish();
 
             scope.$on('$destroy', function(){
-              hot$.unsubscribe();
+              hot$.unsubscribe ? hot$.unsubscribe():'';
             });
 
             hot$.connect();

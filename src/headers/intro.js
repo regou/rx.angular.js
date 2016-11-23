@@ -25,7 +25,7 @@
       return root.Rx;
     });
   } else if (typeof module == 'object' && module && module.exports == freeExports) {
-    module.exports = factory(root, module.exports, require('rxjs'), require('angular-bsfy'));
+    module.exports = factory(root, module.exports, require('rxjs'), require('angular'));
   } else {
     root.Rx = factory(root, {}, root.Rx, root.angular);
   }
