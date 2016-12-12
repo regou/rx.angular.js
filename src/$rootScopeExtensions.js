@@ -146,7 +146,7 @@
                 return rx.Observable.create(function (observer) {
                   // Create function to handle old and new Value
                   function listener (newValue, oldValue) {
-                    observer.onNext({ oldValue: oldValue, newValue: newValue });
+                    observer.next({ oldValue: oldValue, newValue: newValue });
                   }
 
                   // Returns function which disconnects the $watch expression
@@ -195,7 +195,7 @@
             var hot$ = rx.Observable.create(function (observer) {
               // Create function to handle old and new Value
               function listener (newValue, oldValue) {
-                observer.onNext({ oldValue: oldValue, newValue: newValue });
+                observer.next({ oldValue: oldValue, newValue: newValue });
               }
 
               // Returns function which disconnects the $watch expression
