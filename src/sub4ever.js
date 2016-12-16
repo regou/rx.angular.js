@@ -5,7 +5,7 @@
     onError = angular.isFunction(onError) ? onError : noop;
     onComplete = angular.isFunction(onComplete) ? onComplete : noop;
 
-    var destroy$ = Rx.Observable.fromScopeEvent('$destroy');
+    var destroy$ = Rx.Observable.fromScopeEvent($scope,'$destroy');
 
     var subscription = this
       .takeUntil(destroy$)
