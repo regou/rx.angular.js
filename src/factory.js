@@ -34,5 +34,19 @@
       return Rx.Observable.create(subscribeCore).publish().refCount();
     };
 
+    function noop () { }
+
+    Rx.Observable.fromScopeEvent = function ($scope,eventName) {
+      var scopeEventRemover = noop();
+      return Rx.Observable.fromEventPattern(
+        function (handler) {
+          scopeEventRemover = $scope.$on(eventName, handler);
+        },
+        function () {
+          scopeEventRemover();
+        }
+      );
+    };
+
     return $window.Rx;
   });

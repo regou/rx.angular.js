@@ -5,7 +5,10 @@
     onError = angular.isFunction(onError) ? onError : noop;
     onComplete = angular.isFunction(onComplete) ? onComplete : noop;
 
+    var destroy$ = Rx.Observable.fromScopeEvent('$destroy');
+
     var subscription = this
+      .takeUntil(destroy$)
       .catch(function (error,output$) {
         ($scope.$$phase || $scope.$root.$$phase) ?
           onError(error) :
@@ -26,10 +29,6 @@
             $scope.$apply(function () { onComplete(); });
         }
       );
-
-    $scope.$on('$destroy', function(){
-      subscription.unsubscribe();
-    });
 
     return subscription;
   };

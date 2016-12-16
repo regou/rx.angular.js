@@ -121,6 +121,20 @@ RxNg.inherits = function (child, parent) {
       return Rx.Observable.create(subscribeCore).publish().refCount();
     };
 
+    function noop () { }
+
+    Rx.Observable.fromScopeEvent = function ($scope,eventName) {
+      var scopeEventRemover = noop();
+      return Rx.Observable.fromEventPattern(
+        function (handler) {
+          scopeEventRemover = $scope.$on(eventName, handler);
+        },
+        function () {
+          scopeEventRemover();
+        }
+      );
+    };
+
     return $window.Rx;
   }]);
 
@@ -217,7 +231,10 @@ RxNg.inherits = function (child, parent) {
     onError = angular.isFunction(onError) ? onError : noop;
     onComplete = angular.isFunction(onComplete) ? onComplete : noop;
 
+    var destroy$ = Rx.Observable.fromScopeEvent('$destroy');
+
     var subscription = this
+      .takeUntil(destroy$)
       .catch(function (error,output$) {
         ($scope.$$phase || $scope.$root.$$phase) ?
           onError(error) :
@@ -238,10 +255,6 @@ RxNg.inherits = function (child, parent) {
             $scope.$apply(function () { onComplete(); });
         }
       );
-
-    $scope.$on('$destroy', function(){
-      subscription.unsubscribe();
-    });
 
     return subscription;
   };

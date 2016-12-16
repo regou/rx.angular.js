@@ -121,6 +121,20 @@ RxNg.inherits = function (child, parent) {
       return Rx.Observable.create(subscribeCore).publish().refCount();
     };
 
+    function noop () { }
+
+    Rx.Observable.fromScopeEvent = function ($scope,eventName) {
+      var scopeEventRemover = noop();
+      return Rx.Observable.fromEventPattern(
+        function (handler) {
+          scopeEventRemover = $scope.$on(eventName, handler);
+        },
+        function () {
+          scopeEventRemover();
+        }
+      );
+    };
+
     return $window.Rx;
   });
 
@@ -358,7 +372,7 @@ RxNg.inherits = function (child, parent) {
                 return rx.Observable.create(function (observer) {
                   // Create function to handle old and new Value
                   function listener (newValue, oldValue) {
-                    observer.onNext({ oldValue: oldValue, newValue: newValue });
+                    observer.next({ oldValue: oldValue, newValue: newValue });
                   }
 
                   // Returns function which disconnects the $watch expression
@@ -407,7 +421,7 @@ RxNg.inherits = function (child, parent) {
             var hot$ = rx.Observable.create(function (observer) {
               // Create function to handle old and new Value
               function listener (newValue, oldValue) {
-                observer.onNext({ oldValue: oldValue, newValue: newValue });
+                observer.next({ oldValue: oldValue, newValue: newValue });
               }
 
               // Returns function which disconnects the $watch expression
