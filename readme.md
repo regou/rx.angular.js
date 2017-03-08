@@ -59,7 +59,7 @@ angular.module('example', ['rx'])
     */
     $scope.$createObservableFunction('click')
       .map(function () { return $scope.search; })
-      .flatMapLatest(searchWikipedia)
+      .switchMap(searchWikipedia)
       .subscribe(function(results) {
         $scope.results = results;
       });
