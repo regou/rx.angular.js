@@ -86,28 +86,15 @@
           value: function(watchExpression, objectEquality) {
             var scope = this;
 
-            var hot$ = rx.Observable.create(function (observer) {
-              // Create function to handle old and new Value
-              function listener (newValue, oldValue) {
-                observer.next({ oldValue: oldValue, newValue: newValue });
-              }
-
-              // Returns function which disconnects the $watch expression
-              var disposable = new rx.Subscription(scope.$watch(watchExpression, listener, objectEquality));
-
-              scope.$on('$destroy', function(){
-                disposable.unsubscribe();
-              });
-
-              return disposable;
-            }).publish();
-
-
+            var hot$ = new rx.Subject();
+            function listener (newValue, oldValue) {
+              hot$.next({ oldValue: oldValue, newValue: newValue });
+            }
+            scope.$watch(watchExpression, listener, objectEquality);
             scope.$on('$destroy', function(){
-              hot$.unsubscribe ? hot$.unsubscribe():'';
+              hot$.unsubscribe();
             });
 
-            hot$.connect();
             return hot$
           },
           /**
@@ -192,27 +179,16 @@
            */
           value: function(watchExpression) {
             var scope = this;
-            var hot$ = rx.Observable.create(function (observer) {
-              // Create function to handle old and new Value
-              function listener (newValue, oldValue) {
-                observer.next({ oldValue: oldValue, newValue: newValue });
-              }
 
-              // Returns function which disconnects the $watch expression
-              var disposable = new rx.Subscription(scope.$watchCollection(watchExpression, listener));
-
-              scope.$on('$destroy', function(){
-                disposable.dispose();
-              });
-
-              return disposable;
-            }).publish();
-
+            var hot$ = new rx.Subject();
+            function listener (newValue, oldValue) {
+              hot$.next({ oldValue: oldValue, newValue: newValue });
+            }
+            scope.$watchCollection(watchExpression, listener);
             scope.$on('$destroy', function(){
-              hot$.unsubscribe ? hot$.unsubscribe():'';
+              hot$.unsubscribe();
             });
 
-            hot$.connect();
             return hot$;
           },
           /**
